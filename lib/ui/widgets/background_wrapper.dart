@@ -22,8 +22,14 @@ class BackgroundWrapper extends StatelessWidget {
     }
 
     return Container(
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.zero,
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(bgImage), fit: BoxFit.cover),
+        image: DecorationImage(
+          image: AssetImage(bgImage),
+          fit: BoxFit.fitWidth,
+          alignment: Alignment.center,
+        ),
       ),
       child: child,
     );

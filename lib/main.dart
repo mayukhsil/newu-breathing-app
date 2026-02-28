@@ -11,6 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(BreathingPreferencesAdapter());
+  await Hive.openBox('appSettings');
 
   runApp(const MyApp());
 }
@@ -26,8 +27,17 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.light;
+  late ThemeMode _themeMode;
   bool _imagesPreloaded = false;
+  late Box _appSettingsBox;
+
+  @override
+  void initState() {
+    super.initState();
+    _appSettingsBox = Hive.box('appSettings');
+    final isDark = _appSettingsBox.get('isDarkMode', defaultValue: false);
+    _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+  }
 
   @override
   void didChangeDependencies() {
@@ -47,6 +57,7 @@ class MyAppState extends State<MyApp> {
           ? ThemeMode.dark
           : ThemeMode.light;
     });
+    _appSettingsBox.put('isDarkMode', _themeMode == ThemeMode.dark);
   }
 
   @override

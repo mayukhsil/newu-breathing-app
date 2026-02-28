@@ -69,6 +69,7 @@ class SettingsPage extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 8),
                       Text(
                         'Set your breathing pace',
                         style: Theme.of(context).textTheme.headlineMedium
@@ -192,7 +193,7 @@ class SettingsPage extends StatelessWidget {
                             ),
 
                             const SizedBox(height: 24),
-                            const Divider(),
+                            Divider(color: Colors.grey.withAlpha(100)),
                             const SizedBox(height: 16),
 
                             // Advanced timing logic
@@ -290,47 +291,52 @@ class SettingsPage extends StatelessWidget {
                             ),
 
                             const SizedBox(height: 16),
-                            const Divider(),
+                            Divider(color: Colors.grey.withAlpha(100)),
                             const SizedBox(height: 16),
 
                             // Sound Toggle
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Sound',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    Text(
-                                      'Gentle chime between phases',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                                Switch(
-                                  value: prefs.soundEnabled,
-                                  activeThumbColor: Theme.of(
-                                    context,
-                                  ).colorScheme.primary,
-                                  onChanged: (val) {
-                                    context.read<SettingsBloc>().add(
-                                      UpdateSettings(
-                                        prefs.copyWith(soundEnabled: val),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Sound',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                       ),
-                                    );
-                                  },
-                                ),
-                              ],
+                                      Text(
+                                        'Gentle chime between phases',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodyMedium,
+                                      ),
+                                    ],
+                                  ),
+                                  Switch(
+                                    value: prefs.soundEnabled,
+                                    activeThumbColor: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    onChanged: (val) {
+                                      context.read<SettingsBloc>().add(
+                                        UpdateSettings(
+                                          prefs.copyWith(soundEnabled: val),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -383,9 +389,7 @@ class SettingsPage extends StatelessWidget {
                             width: 20,
                             height: 20,
                             colorFilter: ColorFilter.mode(
-                              Theme.of(context).brightness != Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
+                              Colors.white,
                               BlendMode.srcIn,
                             ),
                           ),
