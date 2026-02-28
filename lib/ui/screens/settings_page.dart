@@ -39,9 +39,11 @@ class SettingsPage extends StatelessWidget {
                         alignment: Alignment.topRight,
                         child: IconButton(
                           padding: EdgeInsets.zero,
-                          icon: const Icon(
-                            Icons.nights_stay,
-                          ), // or brightness_high based on theme
+                          icon: Icon(
+                            Theme.of(context).brightness == Brightness.light
+                                ? Icons.nights_stay
+                                : Icons.brightness_high,
+                          ),
                           onPressed: () {
                             // Toggle theme globally
                             import_main.MyApp.of(context).toggleTheme();
@@ -53,7 +55,6 @@ class SettingsPage extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
                               color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: FontWeight.bold,
                             ),
                       ),
                       const SizedBox(height: 8),
@@ -207,14 +208,14 @@ class SettingsPage extends StatelessWidget {
                                     advancedTimingEnabled: expanded,
                                   );
 
-                                  // Reset advanced timings to simple duration when closing panel
+                                  // Reset advanced timings to 4s when closing panel
                                   if (!expanded) {
-                                    final sec = prefs.simpleDurationSeconds;
                                     updatedPrefs = updatedPrefs.copyWith(
-                                      breatheInSeconds: sec,
-                                      holdInSeconds: sec,
-                                      breatheOutSeconds: sec,
-                                      holdOutSeconds: sec,
+                                      simpleDurationSeconds: 4,
+                                      breatheInSeconds: 4,
+                                      holdInSeconds: 4,
+                                      breatheOutSeconds: 4,
+                                      holdOutSeconds: 4,
                                     );
                                   }
 
@@ -424,14 +425,20 @@ class SettingsPage extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.transparent
+              ? Theme.of(context).brightness == Brightness.light
+                    ? Color(0x22E47B00)
+                    : Color(0x44E47B00)
               : Colors.grey.withValues(alpha: 0.1),
           border: Border.all(
-            color: isSelected ? Colors.orange : Colors.transparent,
+            color: isSelected
+                ? Theme.of(context).brightness == Brightness.light
+                      ? Color(0x66E47B00)
+                      : Color(0xFFE47B00)
+                : Colors.transparent,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(24),
@@ -439,7 +446,11 @@ class SettingsPage extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.orange : Colors.grey.shade600,
+            color: isSelected
+                ? Theme.of(context).brightness == Brightness.light
+                      ? Color(0xAAE47B00)
+                      : Color(0xFFE47B00)
+                : Colors.grey.shade600,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),

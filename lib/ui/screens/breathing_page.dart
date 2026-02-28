@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../logic/settings_bloc/settings_bloc.dart';
 import '../../logic/breathing_bloc/breathing_bloc.dart';
 import '../../logic/breathing_bloc/breathing_event.dart';
@@ -170,6 +171,7 @@ class _BreathingPageState extends State<BreathingPage>
                       "You're a natural",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
+                        fontSize: 18,
                       ),
                     ),
 
@@ -185,25 +187,42 @@ class _BreathingPageState extends State<BreathingPage>
                           height: targetSize,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.2),
+                            gradient: RadialGradient(
+                              colors:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? const [Color(0x337B2D8E), Color(0x0D7B2D8E)]
+                                  : const [
+                                      Color(0x66C97CF5),
+                                      Color(0x1AC97CF5),
+                                    ],
+                            ),
                             border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withValues(alpha: 0.5),
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? const Color(0x1F7B2D8E)
+                                  : const Color(0x40C97CF5),
                               width: 1,
                             ),
                           ),
                           alignment: Alignment.center,
-                          child: Text(
-                            bubbleText,
-                            style: TextStyle(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.headlineMedium?.color,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 100),
+                            switchInCurve: Curves.easeIn,
+                            switchOutCurve: Curves.easeOut,
+                            child: Text(
+                              bubbleText,
+                              key: ValueKey<String>(bubbleText),
+                              style: TextStyle(
+                                fontSize: 45,
+                                fontVariations: const <FontVariation>[
+                                  FontVariation('wght', 700),
+                                ],
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.headlineMedium?.color,
+                              ),
                             ),
                           ),
                         ),
@@ -260,8 +279,15 @@ class _BreathingPageState extends State<BreathingPage>
                               'Cycle ${state.currentCycle} of ${state.totalCycles}',
                             ),
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              fontVariations: <FontVariation>[
+                                FontVariation('wght', 600),
+                              ],
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.black87
+                                  : Colors.white70,
                             ),
                           ),
                         ),
@@ -283,28 +309,41 @@ class _BreathingPageState extends State<BreathingPage>
                               vertical: 16,
                             ),
                             decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary.withValues(alpha: 0.1),
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Color(0xFFEFE6F0)
+                                  : Theme.of(context).colorScheme.primary,
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
+                                SvgPicture.asset(
                                   state.isPaused
-                                      ? Icons.play_arrow
-                                      : Icons.pause,
-                                  color: Theme.of(context).colorScheme.primary,
+                                      ? 'assets/icons/play.svg'
+                                      : 'assets/icons/pause.svg',
+                                  width: 20,
+                                  height: 20,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).iconTheme.color ??
+                                        Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
+
                                 const SizedBox(width: 8),
                                 Text(
                                   state.isPaused ? 'Resume' : 'Pause',
                                   style: TextStyle(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.black87
+                                        : Colors.white,
+                                    fontVariations: <FontVariation>[
+                                      FontVariation('wght', 600),
+                                    ],
                                     fontSize: 16,
                                   ),
                                 ),

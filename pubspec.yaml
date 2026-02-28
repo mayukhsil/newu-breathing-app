@@ -19,6 +19,8 @@ dependencies:
   equatable: ^2.0.8
   lottie: ^3.3.2
   google_fonts: ^8.0.2
+  flutter_svg: ^2.2.3
+  collection: ^1.9.1
 
 dev_dependencies:
   flutter_test:
@@ -35,6 +37,7 @@ flutter:
     - assets/animations/
     - assets/audios/
     - assets/images/
+    - assets/icons/
 
   fonts:
     - family: Quicksand

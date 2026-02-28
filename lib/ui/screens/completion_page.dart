@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:newu_task/core/utils.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
 import 'breathing_page.dart';
@@ -23,11 +25,28 @@ class CompletionPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.nights_stay),
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         import_main.MyApp.of(context).toggleTheme();
                       },
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                              ? Colors.black.withValues(alpha: 0.1)
+                              : Colors.white.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        child: SvgPicture.asset(
+                          Theme.of(context).brightness == Brightness.light
+                              ? 'assets/icons/darkMode.svg'
+                              : 'assets/icons/lightMode.svg',
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -41,20 +60,18 @@ class CompletionPage extends StatelessWidget {
                     children: [
                       // Lottie Animation
                       SizedBox(
-                        height: 150,
+                        height: 180,
+                        width: 180,
                         child: Lottie.asset(
                           'assets/animations/completed.lottie',
+                          addRepaintBoundary: true,
+                          decoder: customDecoder,
+                          alignment: Alignment.center,
+                          animate: true,
                           repeat: false,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(
-                                Icons.check_circle,
-                                size: 100,
-                                color: Colors.green,
-                              ),
                         ),
                       ),
-                      const SizedBox(height: 32),
-
+                      const SizedBox(height: 20),
                       Text(
                         'You did it! 🎉',
                         style: Theme.of(context).textTheme.headlineMedium,
@@ -69,7 +86,7 @@ class CompletionPage extends StatelessWidget {
 
                       // Start again button
                       SizedBox(
-                        width: double.infinity,
+                        width: 260,
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () {
@@ -85,29 +102,47 @@ class CompletionPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(28),
                             ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 'Start again',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                  fontVariations: <FontVariation>[
+                                    FontVariation('wght', 700),
+                                  ],
+                                  color:
+                                      Theme.of(context).brightness !=
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Icon(Icons.air),
+                              SvgPicture.asset(
+                                'assets/icons/air.svg',
+                                width: 20,
+                                height: 20,
+                                colorFilter: ColorFilter.mode(
+                                  Theme.of(context).brightness !=
+                                          Brightness.light
+                                      ? Colors.black
+                                      : Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 28),
 
                       // Back to set up button
                       SizedBox(
-                        width: double.infinity,
-                        height: 56,
+                        width: 190,
+                        height: 50,
                         child: TextButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -116,19 +151,25 @@ class CompletionPage extends StatelessWidget {
                             backgroundColor:
                                 Theme.of(context).brightness == Brightness.dark
                                 ? Colors.white.withValues(alpha: 0.1)
-                                : Colors.black.withValues(alpha: 0.05),
+                                : Colors.black.withValues(alpha: 0.1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(28),
                             ),
                           ),
-                          child: Text(
-                            'Back to set up',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge?.color,
+                          child: Center(
+                            child: Text(
+                              'Back to set up',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontVariations: <FontVariation>[
+                                  FontVariation('wght', 600),
+                                ],
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
                             ),
                           ),
                         ),
