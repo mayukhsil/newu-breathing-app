@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import '../../data/models/breathing_preferences.dart';
+import '../../models/breathing_preferences.dart';
 import 'settings_event.dart';
 import 'settings_state.dart';
 

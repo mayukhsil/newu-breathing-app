@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/theme.dart';
-import 'data/models/breathing_preferences.dart';
+import 'models/breathing_preferences.dart';
 import 'logic/settings_bloc/settings_bloc.dart';
 import 'logic/settings_bloc/settings_event.dart';
 import 'ui/screens/settings_page.dart';

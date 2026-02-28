@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
+import 'breathing_page.dart';
 
 class CompletionPage extends StatelessWidget {
   const CompletionPage({super.key});
@@ -72,14 +73,12 @@ class CompletionPage extends StatelessWidget {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () {
-                            // Go back to breathing page or settings? "Start again" suggests immediate start.
-                            // The screenshots flow suggests returning to breathing but with same settings.
-                            // Usually it's simpler to pop back to settings, but let's just pop here, which returns to breathing page if it's pushed, but breathing page pops on completion.
-                            // So from settings -> breathing -> completion.
-                            // "Start again" can just pop back to settings where user can tap start again. Or pop all the way.
-                            Navigator.pop(
+                            Navigator.pushReplacement(
                               context,
-                            ); // This implies returning to settings if breathing page popped before showing this.
+                              MaterialPageRoute(
+                                builder: (_) => const BreathingPage(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(

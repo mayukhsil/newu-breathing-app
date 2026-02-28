@@ -7,6 +7,7 @@ import '../../logic/breathing_bloc/breathing_event.dart';
 import '../../logic/breathing_bloc/breathing_state.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
+import '../widgets/smooth_progress.dart';
 import 'completion_page.dart';
 
 class BreathingPage extends StatefulWidget {
@@ -151,7 +152,6 @@ class _BreathingPageState extends State<BreathingPage>
                           IconButton(
                             icon: const Icon(Icons.close),
                             onPressed: () {
-                              _breathingBloc.add(StopSession());
                               Navigator.pop(context);
                             },
                           ),
@@ -213,43 +213,56 @@ class _BreathingPageState extends State<BreathingPage>
                     // Bottom Info
                     Column(
                       children: [
-                        Text(
-                          phaseTitle,
-                          style: Theme.of(context).textTheme.headlineMedium,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          switchInCurve: Curves.easeIn,
+                          switchOutCurve: Curves.easeOut,
+                          child: Text(
+                            phaseTitle,
+                            key: ValueKey<String>(phaseTitle),
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          phaseSubtitle,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          switchInCurve: Curves.easeIn,
+                          switchOutCurve: Curves.easeOut,
+                          child: Text(
+                            phaseSubtitle,
+                            key: ValueKey<String>(phaseSubtitle),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                         ),
                         const SizedBox(height: 40),
 
                         // Progress Bar
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 64.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: state.maxAppTicks > 0
-                                  ? (state.totalAppTicks / state.maxAppTicks)
-                                  : 0,
-                              minHeight: 8,
-                              backgroundColor: Colors.grey.withValues(
-                                alpha: 0.2,
-                              ),
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
+                          child: SmoothBreathingProgress(
+                            value: state.maxAppTicks > 0
+                                ? (state.totalAppTicks / state.maxAppTicks)
+                                : 0,
+                            isPaused: state.isPaused,
+                            backgroundColor: Colors.grey.withValues(alpha: 0.2),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                         const SizedBox(height: 12),
 
-                        Text(
-                          'Cycle ${state.currentCycle} of ${state.totalCycles}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w500,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          switchInCurve: Curves.easeIn,
+                          switchOutCurve: Curves.easeOut,
+                          child: Text(
+                            'Cycle ${state.currentCycle} of ${state.totalCycles}',
+                            key: ValueKey<String>(
+                              'Cycle ${state.currentCycle} of ${state.totalCycles}',
+                            ),
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
 

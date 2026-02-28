@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/models/breathing_preferences.dart';
+import '../../models/breathing_preferences.dart';
 import 'breathing_event.dart';
 import 'breathing_state.dart';
 
