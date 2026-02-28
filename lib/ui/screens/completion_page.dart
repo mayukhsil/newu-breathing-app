@@ -95,7 +95,7 @@ class CompletionPage extends StatelessWidget {
                           onPressed: () {
                             Navigator.pushNamedAndRemoveUntil(
                               context,
-                              '/',
+                              '/breathing',
                               (route) => false,
                             );
                           },
@@ -147,7 +147,11 @@ class CompletionPage extends StatelessWidget {
                         height: 50,
                         child: TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              '/',
+                              (route) => false,
+                            );
                           },
                           style: TextButton.styleFrom(
                             backgroundColor:

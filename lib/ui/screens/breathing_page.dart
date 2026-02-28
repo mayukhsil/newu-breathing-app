@@ -160,10 +160,11 @@ class _BreathingPageState extends State<BreathingPage>
                                 context: context,
                                 builder: (context) => AlertDialog(
                                   title: Text(
-                                    'Exit',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    'Exit?',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(color: Colors.red),
                                   ),
                                   content: Text(
                                     'Are you sure you want to exit?',
@@ -171,6 +172,7 @@ class _BreathingPageState extends State<BreathingPage>
                                       context,
                                     ).textTheme.bodyMedium,
                                   ),
+                                  actionsPadding: EdgeInsets.only(bottom: 16),
                                   actionsAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   actions: [
@@ -187,8 +189,11 @@ class _BreathingPageState extends State<BreathingPage>
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          '/',
+                                          (route) => false,
+                                        );
                                       },
                                       child: Text(
                                         'Yes',
