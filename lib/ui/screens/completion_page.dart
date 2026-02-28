@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
@@ -18,10 +19,13 @@ class CompletionPage extends StatelessWidget {
             children: [
               // Top Bar
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
+                padding: kIsWeb
+                    ? EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.35,
+                        right: MediaQuery.of(context).size.width * 0.35,
+                        top: 20,
+                      )
+                    : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

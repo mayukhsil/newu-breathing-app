@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -55,8 +56,8 @@ class _BreathingPageState extends State<BreathingPage>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final maxBubbleSize = size.width * 0.7;
-    final minBubbleSize = size.width * 0.4;
+    final maxBubbleSize = kIsWeb ? 500.0 : size.width * 0.7;
+    final minBubbleSize = kIsWeb ? 300.0 : size.width * 0.4;
 
     return BackgroundWrapper(
       child: BlocProvider.value(
@@ -143,10 +144,16 @@ class _BreathingPageState extends State<BreathingPage>
                   children: [
                     // Top Bar
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                      padding: kIsWeb
+                          ? EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.35,
+                              right: MediaQuery.of(context).size.width * 0.35,
+                              top: 20,
+                            )
+                          : const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -156,11 +163,29 @@ class _BreathingPageState extends State<BreathingPage>
                               Navigator.pop(context);
                             },
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.nights_stay),
-                            onPressed: () {
+                          GestureDetector(
+                            onTap: () {
                               import_main.MyApp.of(context).toggleTheme();
                             },
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.black.withValues(alpha: 0.1)
+                                    : Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(28),
+                              ),
+                              child: SvgPicture.asset(
+                                Theme.of(context).brightness == Brightness.light
+                                    ? 'assets/icons/darkMode.svg'
+                                    : 'assets/icons/lightMode.svg',
+                                width: 20,
+                                height: 20,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -257,7 +282,14 @@ class _BreathingPageState extends State<BreathingPage>
 
                         // Progress Bar
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 64.0),
+                          padding: kIsWeb
+                              ? EdgeInsets.only(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.35,
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.35,
+                                )
+                              : const EdgeInsets.symmetric(horizontal: 64.0),
                           child: SmoothBreathingProgress(
                             value: state.maxAppTicks > 0
                                 ? (state.totalAppTicks / state.maxAppTicks)

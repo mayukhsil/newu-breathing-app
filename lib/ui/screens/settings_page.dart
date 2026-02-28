@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../models/breathing_preferences.dart';
 import '../../logic/settings_bloc/settings_bloc.dart';
 import '../../logic/settings_bloc/settings_event.dart';
@@ -30,24 +32,41 @@ class SettingsPage extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 SingleChildScrollView(
-                  padding: const EdgeInsets.all(24.0),
+                  padding: kIsWeb
+                      ? EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.35,
+                          right: MediaQuery.of(context).size.width * 0.35,
+                        )
+                      : const EdgeInsets.all(24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 40),
                       Align(
                         alignment: Alignment.topRight,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            Theme.of(context).brightness == Brightness.light
-                                ? Icons.nights_stay
-                                : Icons.brightness_high,
-                          ),
-                          onPressed: () {
-                            // Toggle theme globally
+                        child: GestureDetector(
+                          onTap: () {
                             import_main.MyApp.of(context).toggleTheme();
                           },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.black.withValues(alpha: 0.1)
+                                  : Colors.white.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            child: SvgPicture.asset(
+                              Theme.of(context).brightness == Brightness.light
+                                  ? 'assets/icons/darkMode.svg'
+                                  : 'assets/icons/lightMode.svg',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
                         ),
                       ),
                       Text(
@@ -325,9 +344,15 @@ class SettingsPage extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     height: 56,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ).copyWith(bottom: 20),
+                    margin: kIsWeb
+                        ? EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.35,
+                            right: MediaQuery.of(context).size.width * 0.35,
+                            bottom: 80,
+                          )
+                        : const EdgeInsets.symmetric(
+                            horizontal: 16,
+                          ).copyWith(bottom: 20),
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -342,7 +367,7 @@ class SettingsPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(28),
                         ),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
@@ -353,7 +378,17 @@ class SettingsPage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 8),
-                          Icon(Icons.air),
+                          SvgPicture.asset(
+                            'assets/icons/air.svg',
+                            width: 20,
+                            height: 20,
+                            colorFilter: ColorFilter.mode(
+                              Theme.of(context).brightness != Brightness.light
+                                  ? Colors.black
+                                  : Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ],
                       ),
                     ),

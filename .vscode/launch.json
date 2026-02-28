@@ -10,6 +10,16 @@
             "type": "dart"
         },
         {
+            "name": "newu_task (web)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "chrome"
+            ]
+        },
+        {
             "name": "newu_task (profile mode)",
             "request": "launch",
             "type": "dart",
