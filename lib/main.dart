@@ -6,6 +6,8 @@ import 'models/breathing_preferences.dart';
 import 'logic/settings_bloc/settings_bloc.dart';
 import 'logic/settings_bloc/settings_event.dart';
 import 'ui/screens/settings_page.dart';
+import 'ui/screens/breathing_page.dart';
+import 'ui/screens/completion_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,7 +72,12 @@ class MyAppState extends State<MyApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        home: const SettingsPage(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SettingsPage(),
+          '/breathing': (context) => const BreathingPage(),
+          '/completion': (context) => const CompletionPage(),
+        },
       ),
     );
   }

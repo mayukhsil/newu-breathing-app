@@ -5,7 +5,6 @@ import 'package:lottie/lottie.dart';
 import 'package:newu_task/core/utils.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
-import 'breathing_page.dart';
 
 class CompletionPage extends StatelessWidget {
   const CompletionPage({super.key});
@@ -94,11 +93,10 @@ class CompletionPage extends StatelessWidget {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                builder: (_) => const BreathingPage(),
-                              ),
+                              '/',
+                              (route) => false,
                             );
                           },
                           style: ElevatedButton.styleFrom(

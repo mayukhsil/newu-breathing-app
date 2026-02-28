@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,7 +5,6 @@ import '../../models/breathing_preferences.dart';
 import '../../logic/settings_bloc/settings_bloc.dart';
 import '../../logic/settings_bloc/settings_event.dart';
 import '../../logic/settings_bloc/settings_state.dart';
-import 'breathing_page.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
 
@@ -32,12 +30,7 @@ class SettingsPage extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 SingleChildScrollView(
-                  padding: kIsWeb
-                      ? EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.35,
-                          right: MediaQuery.of(context).size.width * 0.35,
-                        )
-                      : const EdgeInsets.all(24.0),
+                  padding: const EdgeInsets.all(24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -69,7 +62,7 @@ class SettingsPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Set your breathing pace',
                         style: Theme.of(context).textTheme.headlineMedium
@@ -295,48 +288,43 @@ class SettingsPage extends StatelessWidget {
                             const SizedBox(height: 16),
 
                             // Sound Toggle
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 8),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Sound',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Sound',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    Text(
+                                      'Gentle chime between phases',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                                Switch(
+                                  value: prefs.soundEnabled,
+                                  activeThumbColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary,
+                                  onChanged: (val) {
+                                    context.read<SettingsBloc>().add(
+                                      UpdateSettings(
+                                        prefs.copyWith(soundEnabled: val),
                                       ),
-                                      Text(
-                                        'Gentle chime between phases',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
-                                      ),
-                                    ],
-                                  ),
-                                  Switch(
-                                    value: prefs.soundEnabled,
-                                    activeThumbColor: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    onChanged: (val) {
-                                      context.read<SettingsBloc>().add(
-                                        UpdateSettings(
-                                          prefs.copyWith(soundEnabled: val),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -350,23 +338,12 @@ class SettingsPage extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     height: 56,
-                    margin: kIsWeb
-                        ? EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.35,
-                            right: MediaQuery.of(context).size.width * 0.35,
-                            bottom: 80,
-                          )
-                        : const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ).copyWith(bottom: 20),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ).copyWith(bottom: 20),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const BreathingPage(),
-                          ),
-                        );
+                        Navigator.pushNamed(context, '/breathing');
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -378,10 +355,11 @@ class SettingsPage extends StatelessWidget {
                         children: [
                           Text(
                             'Start breathing',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(
+                                  fontVariations: [FontVariation('wght', 700)],
+                                  color: Colors.white,
+                                ),
                           ),
                           SizedBox(width: 8),
                           SvgPicture.asset(

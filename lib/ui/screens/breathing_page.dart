@@ -10,7 +10,6 @@ import '../../logic/breathing_bloc/breathing_state.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
 import '../widgets/smooth_progress.dart';
-import 'completion_page.dart';
 
 class BreathingPage extends StatefulWidget {
   const BreathingPage({super.key});
@@ -68,10 +67,7 @@ class _BreathingPageState extends State<BreathingPage>
               listener: (context, state) {
                 if (state.phase == BreathingPhase.completed) {
                   // Navigate to completion screen
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CompletionPage()),
-                  );
+                  Navigator.pushReplacementNamed(context, '/completion');
                 } else {
                   _playSoundIfNeeded(state);
                 }
@@ -160,7 +156,51 @@ class _BreathingPageState extends State<BreathingPage>
                           IconButton(
                             icon: const Icon(Icons.close),
                             onPressed: () {
-                              Navigator.pop(context);
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    'Exit',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                  ),
+                                  content: Text(
+                                    'Are you sure you want to exit?',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                  ),
+                                  actionsAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        'No',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodyMedium,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        'Yes',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                           ),
                           GestureDetector(
