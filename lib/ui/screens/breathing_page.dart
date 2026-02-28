@@ -11,6 +11,11 @@ import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
 import '../widgets/smooth_progress.dart';
 
+/// The active breathing session screen.
+///
+/// This screen displays the expanding and contracting orb mapped exactly
+/// to the state emitted by the [BreathingBloc]. It handles implicit animations
+/// and audio playback.
 class BreathingPage extends StatefulWidget {
   const BreathingPage({super.key});
 
@@ -18,6 +23,8 @@ class BreathingPage extends StatefulWidget {
   State<BreathingPage> createState() => _BreathingPageState();
 }
 
+/// The state for [BreathingPage], managing the local [BreathingBloc] instance
+/// and the [AudioPlayer] for transition chimes.
 class _BreathingPageState extends State<BreathingPage>
     with TickerProviderStateMixin {
   late BreathingBloc _breathingBloc;
@@ -38,6 +45,10 @@ class _BreathingPageState extends State<BreathingPage>
     super.dispose();
   }
 
+  /// Plays a subtle sound chime if enabled in settings.
+  ///
+  /// Fires specifically when there is exactly 1 second remaining before
+  /// entering a new active breathing phase.
   void _playSoundIfNeeded(BreathingState state) async {
     if (context.read<SettingsBloc>().state.preferences.soundEnabled) {
       if (state.secondsRemaining == 1 &&
@@ -453,6 +464,10 @@ class _BreathingPageState extends State<BreathingPage>
     );
   }
 
+  /// Retrieves the correct duration in seconds for a specific [BreathingPhase].
+  ///
+  /// Checks whether advanced timing is enabled to return distinct phase durations,
+  /// otherwise returns the uniform simple duration.
   int _getPhaseDuration(BreathingPhase phase) {
     final prefs = context.read<SettingsBloc>().state.preferences;
     if (prefs.advancedTimingEnabled) {

@@ -4,6 +4,11 @@ import '../../models/breathing_preferences.dart';
 import 'breathing_event.dart';
 import 'breathing_state.dart';
 
+/// A finite state machine managing the logic and precise timing of a breathing session.
+///
+/// The [BreathingBloc] receives UI events, drives an internal timer to tick
+/// every second, and emits new [BreathingState] snapshots containing the
+/// updated phase, remaining duration, and total progress.
 class BreathingBloc extends Bloc<BreathingEvent, BreathingState> {
   Timer? _timer;
   late BreathingPreferences _preferences;
@@ -16,6 +21,9 @@ class BreathingBloc extends Bloc<BreathingEvent, BreathingState> {
     on<BreathingTick>(_onTick);
   }
 
+  /// Handles the [StartSession] event by parsing [BreathingPreferences],
+  /// calculating the exact maximum duration of the session, and spinning
+  /// up the periodic timer.
   void _onStartSession(StartSession event, Emitter<BreathingState> emit) {
     _preferences = event.preferences;
 
@@ -66,6 +74,9 @@ class BreathingBloc extends Bloc<BreathingEvent, BreathingState> {
     emit(BreathingState.initial().copyWith(phase: BreathingPhase.completed));
   }
 
+  /// Fired every second by the internal timer.
+  ///
+  /// Decrements [secondsRemaining]. If zero is reached, it triggers a phase transition.
   void _onTick(BreathingTick event, Emitter<BreathingState> emit) {
     if (state.phase == BreathingPhase.completed || state.isPaused) return;
 
@@ -85,6 +96,8 @@ class BreathingBloc extends Bloc<BreathingEvent, BreathingState> {
     }
   }
 
+  /// Core logic to advance the state machine to the correct next phase based on
+  /// the current phase and user timing preferences.
   void _moveToNextPhase(Emitter<BreathingState> emit) {
     BreathingPhase nextPhase;
     int nextDuration;

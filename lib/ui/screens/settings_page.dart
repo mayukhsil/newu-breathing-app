@@ -9,6 +9,10 @@ import '../../logic/settings_bloc/settings_state.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
 
+/// The initial screen where users configure their breathing session parameters.
+///
+/// This screen listens to the [SettingsBloc] and allows users to update
+/// preferences like phase duration, total cycles, and advanced asymmetrical timing.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -418,6 +422,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  /// Builds a standardized section title and subtitle for the settings UI.
   Widget _buildSectionTitle(
     BuildContext context,
     String title,
@@ -438,6 +443,10 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  /// Dispatches an [UpdateSettings] event when an advanced timing slider changes.
+  ///
+  /// Automatically recalculates the [simpleDurationSeconds] if all phases
+  /// are deliberately set to the exact same duration.
   void _updateAdvanced(
     BuildContext context,
     BreathingPreferences prefs, {
@@ -467,6 +476,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  /// Builds a selectable rounded chip for quickly choosing numerical values.
   Widget _buildChoiceChip(
     BuildContext context, {
     required String label,
@@ -509,6 +519,8 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  /// Builds a dedicated row with increment and decrement buttons for
+  /// fine-tuning independent advanced phase timings.
   Widget _buildAdvancedSlider(
     BuildContext context,
     String label,

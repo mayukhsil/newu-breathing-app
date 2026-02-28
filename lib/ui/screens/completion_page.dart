@@ -6,6 +6,10 @@ import 'package:newu_task/core/utils.dart';
 import '../../main.dart' as import_main;
 import '../widgets/background_wrapper.dart';
 
+/// The final screen displayed when a user successfully finishes a breathing cycle.
+///
+/// This screen renders a celebratory [Lottie] animation and provides quick
+/// actions to instantly restart the session or return to the [SettingsPage].
 class CompletionPage extends StatelessWidget {
   const CompletionPage({super.key});
 
@@ -193,7 +197,7 @@ class CompletionPage extends StatelessWidget {
               ),
             );
           },
-        ), // Close SafeArea
+        ),
       ), // Close Scaffold
     ); // Close BackgroundWrapper
   }
