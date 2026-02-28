@@ -27,7 +27,7 @@ class BackgroundWrapper extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(bgImage),
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.cover,
           alignment: Alignment.center,
         ),
       ),
