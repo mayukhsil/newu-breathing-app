@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,358 +26,391 @@ class SettingsPage extends StatelessWidget {
 
         return BackgroundWrapper(
           child: Scaffold(
-            body: Stack(
-              fit: StackFit.expand,
-              alignment: Alignment.center,
-              children: [
-                SingleChildScrollView(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 40),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            import_main.MyApp.of(context).toggleTheme();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            margin: const EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Colors.black.withValues(alpha: 0.1)
-                                  : Colors.white.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(28),
-                            ),
-                            child: SvgPicture.asset(
-                              Theme.of(context).brightness == Brightness.light
-                                  ? 'assets/icons/darkMode.svg'
-                                  : 'assets/icons/lightMode.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Set your breathing pace',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Customise your breathing session. You can always change this later.',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Card with settings
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surface.withValues(alpha: 0.8),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Simple Duration
-                            _buildSectionTitle(
-                              context,
-                              'Breath duration',
-                              'Seconds per phase',
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [3, 4, 5, 6].map((sec) {
-                                return _buildChoiceChip(
-                                  context,
-                                  label: '${sec}s',
-                                  isSelected:
-                                      prefs.simpleDurationSeconds == sec,
+            body: Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SizedBox(
+                    width: kIsWeb
+                        ? constraints.maxWidth / 2
+                        : constraints.maxWidth,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      alignment: Alignment.center,
+                      children: [
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 60),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: GestureDetector(
                                   onTap: () {
-                                    context.read<SettingsBloc>().add(
-                                      UpdateSettings(
-                                        prefs.copyWith(
-                                          simpleDurationSeconds: sec,
-                                          breatheInSeconds: sec,
-                                          holdInSeconds: sec,
-                                          breatheOutSeconds: sec,
-                                          holdOutSeconds: sec,
-                                        ),
-                                      ),
-                                    );
+                                    import_main.MyApp.of(context).toggleTheme();
                                   },
-                                );
-                              }).toList(),
-                            ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    margin: const EdgeInsets.only(right: 8),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black.withValues(alpha: 0.1)
+                                          : Colors.white.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(28),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? 'assets/icons/darkMode.svg'
+                                          : 'assets/icons/lightMode.svg',
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Set your breathing pace',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.secondary,
+                                    ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Customise your breathing session. You can always change this later.',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const SizedBox(height: 32),
 
-                            const SizedBox(height: 32),
+                              // Card with settings
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surface.withValues(alpha: 0.8),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Simple Duration
+                                    _buildSectionTitle(
+                                      context,
+                                      'Breath duration',
+                                      'Seconds per phase',
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [3, 4, 5, 6].map((sec) {
+                                        return _buildChoiceChip(
+                                          context,
+                                          label: '${sec}s',
+                                          isSelected:
+                                              prefs.simpleDurationSeconds ==
+                                              sec,
+                                          onTap: () {
+                                            context.read<SettingsBloc>().add(
+                                              UpdateSettings(
+                                                prefs.copyWith(
+                                                  simpleDurationSeconds: sec,
+                                                  breatheInSeconds: sec,
+                                                  holdInSeconds: sec,
+                                                  breatheOutSeconds: sec,
+                                                  holdOutSeconds: sec,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }).toList(),
+                                    ),
 
-                            // Rounds
-                            _buildSectionTitle(
-                              context,
-                              'Rounds',
-                              'Full box breathing cycles',
-                            ),
-                            const SizedBox(height: 16),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
+                                    const SizedBox(height: 32),
 
+                                    // Rounds
+                                    _buildSectionTitle(
+                                      context,
+                                      'Rounds',
+                                      'Full box breathing cycles',
+                                    ),
+                                    const SizedBox(height: 16),
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          _buildChoiceChip(
+                                            context,
+                                            label: '2 quick',
+                                            isSelected: prefs.rounds == 2,
+                                            onTap: () => context
+                                                .read<SettingsBloc>()
+                                                .add(
+                                                  UpdateSettings(
+                                                    prefs.copyWith(rounds: 2),
+                                                  ),
+                                                ),
+                                          ),
+                                          _buildChoiceChip(
+                                            context,
+                                            label: '4 calm',
+                                            isSelected: prefs.rounds == 4,
+                                            onTap: () => context
+                                                .read<SettingsBloc>()
+                                                .add(
+                                                  UpdateSettings(
+                                                    prefs.copyWith(rounds: 4),
+                                                  ),
+                                                ),
+                                          ),
+                                          _buildChoiceChip(
+                                            context,
+                                            label: '6 deep',
+                                            isSelected: prefs.rounds == 6,
+                                            onTap: () => context
+                                                .read<SettingsBloc>()
+                                                .add(
+                                                  UpdateSettings(
+                                                    prefs.copyWith(rounds: 6),
+                                                  ),
+                                                ),
+                                          ),
+                                          _buildChoiceChip(
+                                            context,
+                                            label: '8 zen',
+                                            isSelected: prefs.rounds == 8,
+                                            onTap: () => context
+                                                .read<SettingsBloc>()
+                                                .add(
+                                                  UpdateSettings(
+                                                    prefs.copyWith(rounds: 8),
+                                                  ),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 24),
+                                    Divider(color: Colors.grey.withAlpha(100)),
+                                    const SizedBox(height: 16),
+
+                                    // Advanced timing logic
+                                    Theme(
+                                      data: Theme.of(context).copyWith(
+                                        dividerColor: Colors.transparent,
+                                      ),
+                                      child: ExpansionTile(
+                                        tilePadding: EdgeInsets.zero,
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Advanced timing',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            Text(
+                                              'Set different durations for each phase',
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium,
+                                            ),
+                                          ],
+                                        ),
+                                        onExpansionChanged: (expanded) {
+                                          var updatedPrefs = prefs.copyWith(
+                                            advancedTimingEnabled: expanded,
+                                          );
+
+                                          // Reset advanced timings to 4s when closing panel
+                                          if (!expanded) {
+                                            updatedPrefs = updatedPrefs
+                                                .copyWith(
+                                                  simpleDurationSeconds: 4,
+                                                  breatheInSeconds: 4,
+                                                  holdInSeconds: 4,
+                                                  breatheOutSeconds: 4,
+                                                  holdOutSeconds: 4,
+                                                );
+                                          }
+
+                                          context.read<SettingsBloc>().add(
+                                            UpdateSettings(updatedPrefs),
+                                          );
+                                        },
+                                        initiallyExpanded:
+                                            prefs.advancedTimingEnabled,
+                                        children: [
+                                          const SizedBox(height: 16),
+                                          _buildAdvancedSlider(
+                                            context,
+                                            'Breathe in',
+                                            prefs.breatheInSeconds,
+                                            (v) => _updateAdvanced(
+                                              context,
+                                              prefs,
+                                              breatheIn: v,
+                                            ),
+                                          ),
+                                          _buildAdvancedSlider(
+                                            context,
+                                            'Hold in',
+                                            prefs.holdInSeconds,
+                                            (v) => _updateAdvanced(
+                                              context,
+                                              prefs,
+                                              holdIn: v,
+                                            ),
+                                          ),
+                                          _buildAdvancedSlider(
+                                            context,
+                                            'Breathe out',
+                                            prefs.breatheOutSeconds,
+                                            (v) => _updateAdvanced(
+                                              context,
+                                              prefs,
+                                              breatheOut: v,
+                                            ),
+                                          ),
+                                          _buildAdvancedSlider(
+                                            context,
+                                            'Hold out',
+                                            prefs.holdOutSeconds,
+                                            (v) => _updateAdvanced(
+                                              context,
+                                              prefs,
+                                              holdOut: v,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 16),
+                                    Divider(color: Colors.grey.withAlpha(100)),
+                                    const SizedBox(height: 16),
+
+                                    // Sound Toggle
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Sound',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                            Text(
+                                              'Gentle chime between phases',
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium,
+                                            ),
+                                          ],
+                                        ),
+                                        Switch(
+                                          value: prefs.soundEnabled,
+                                          activeThumbColor: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                          onChanged: (val) {
+                                            context.read<SettingsBloc>().add(
+                                              UpdateSettings(
+                                                prefs.copyWith(
+                                                  soundEnabled: val,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(height: 80),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            height: 56,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ).copyWith(bottom: 20),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/breathing');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                              ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  _buildChoiceChip(
-                                    context,
-                                    label: '2 quick',
-                                    isSelected: prefs.rounds == 2,
-                                    onTap: () =>
-                                        context.read<SettingsBloc>().add(
-                                          UpdateSettings(
-                                            prefs.copyWith(rounds: 2),
-                                          ),
+                                  Text(
+                                    'Start breathing',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                          fontVariations: [
+                                            FontVariation('wght', 700),
+                                          ],
+                                          color: Colors.white,
                                         ),
                                   ),
-                                  _buildChoiceChip(
-                                    context,
-                                    label: '4 calm',
-                                    isSelected: prefs.rounds == 4,
-                                    onTap: () =>
-                                        context.read<SettingsBloc>().add(
-                                          UpdateSettings(
-                                            prefs.copyWith(rounds: 4),
-                                          ),
-                                        ),
-                                  ),
-                                  _buildChoiceChip(
-                                    context,
-                                    label: '6 deep',
-                                    isSelected: prefs.rounds == 6,
-                                    onTap: () =>
-                                        context.read<SettingsBloc>().add(
-                                          UpdateSettings(
-                                            prefs.copyWith(rounds: 6),
-                                          ),
-                                        ),
-                                  ),
-                                  _buildChoiceChip(
-                                    context,
-                                    label: '8 zen',
-                                    isSelected: prefs.rounds == 8,
-                                    onTap: () =>
-                                        context.read<SettingsBloc>().add(
-                                          UpdateSettings(
-                                            prefs.copyWith(rounds: 8),
-                                          ),
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 24),
-                            Divider(color: Colors.grey.withAlpha(100)),
-                            const SizedBox(height: 16),
-
-                            // Advanced timing logic
-                            Theme(
-                              data: Theme.of(
-                                context,
-                              ).copyWith(dividerColor: Colors.transparent),
-                              child: ExpansionTile(
-                                tilePadding: EdgeInsets.zero,
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Advanced timing',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    Text(
-                                      'Set different durations for each phase',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                                onExpansionChanged: (expanded) {
-                                  var updatedPrefs = prefs.copyWith(
-                                    advancedTimingEnabled: expanded,
-                                  );
-
-                                  // Reset advanced timings to 4s when closing panel
-                                  if (!expanded) {
-                                    updatedPrefs = updatedPrefs.copyWith(
-                                      simpleDurationSeconds: 4,
-                                      breatheInSeconds: 4,
-                                      holdInSeconds: 4,
-                                      breatheOutSeconds: 4,
-                                      holdOutSeconds: 4,
-                                    );
-                                  }
-
-                                  context.read<SettingsBloc>().add(
-                                    UpdateSettings(updatedPrefs),
-                                  );
-                                },
-                                initiallyExpanded: prefs.advancedTimingEnabled,
-                                children: [
-                                  const SizedBox(height: 16),
-                                  _buildAdvancedSlider(
-                                    context,
-                                    'Breathe in',
-                                    prefs.breatheInSeconds,
-                                    (v) => _updateAdvanced(
-                                      context,
-                                      prefs,
-                                      breatheIn: v,
-                                    ),
-                                  ),
-                                  _buildAdvancedSlider(
-                                    context,
-                                    'Hold in',
-                                    prefs.holdInSeconds,
-                                    (v) => _updateAdvanced(
-                                      context,
-                                      prefs,
-                                      holdIn: v,
-                                    ),
-                                  ),
-                                  _buildAdvancedSlider(
-                                    context,
-                                    'Breathe out',
-                                    prefs.breatheOutSeconds,
-                                    (v) => _updateAdvanced(
-                                      context,
-                                      prefs,
-                                      breatheOut: v,
-                                    ),
-                                  ),
-                                  _buildAdvancedSlider(
-                                    context,
-                                    'Hold out',
-                                    prefs.holdOutSeconds,
-                                    (v) => _updateAdvanced(
-                                      context,
-                                      prefs,
-                                      holdOut: v,
+                                  SizedBox(width: 8),
+                                  SvgPicture.asset(
+                                    'assets/icons/air.svg',
+                                    width: 20,
+                                    height: 20,
+                                    colorFilter: ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-
-                            const SizedBox(height: 16),
-                            Divider(color: Colors.grey.withAlpha(100)),
-                            const SizedBox(height: 16),
-
-                            // Sound Toggle
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Sound',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    Text(
-                                      'Gentle chime between phases',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
-                                    ),
-                                  ],
-                                ),
-                                Switch(
-                                  value: prefs.soundEnabled,
-                                  activeThumbColor: Theme.of(
-                                    context,
-                                  ).colorScheme.primary,
-                                  onChanged: (val) {
-                                    context.read<SettingsBloc>().add(
-                                      UpdateSettings(
-                                        prefs.copyWith(soundEnabled: val),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 80),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    height: 56,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ).copyWith(bottom: 20),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/breathing');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(28),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Start breathing',
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(
-                                  fontVariations: [FontVariation('wght', 700)],
-                                  color: Colors.white,
-                                ),
                           ),
-                          SizedBox(width: 8),
-                          SvgPicture.asset(
-                            'assets/icons/air.svg',
-                            width: 20,
-                            height: 20,
-                            colorFilter: ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
           ),
         );

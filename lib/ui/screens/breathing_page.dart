@@ -62,376 +62,388 @@ class _BreathingPageState extends State<BreathingPage>
       child: BlocProvider.value(
         value: _breathingBloc,
         child: Scaffold(
-          body: SafeArea(
-            child: BlocConsumer<BreathingBloc, BreathingState>(
-              listener: (context, state) {
-                if (state.phase == BreathingPhase.completed) {
-                  // Navigate to completion screen
-                  Navigator.pushReplacementNamed(context, '/completion');
-                } else {
-                  _playSoundIfNeeded(state);
-                }
-              },
-              builder: (context, state) {
-                // Determine bubble size and animation duration based on phase
-                double targetSize = minBubbleSize;
-                int animDuration = state.secondsRemaining;
+          body: Center(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SizedBox(
+                  width: kIsWeb
+                      ? constraints.maxWidth / 2
+                      : constraints.maxWidth,
+                  child: BlocConsumer<BreathingBloc, BreathingState>(
+                    listener: (context, state) {
+                      if (state.phase == BreathingPhase.completed) {
+                        // Navigate to completion screen
+                        Navigator.pushReplacementNamed(context, '/completion');
+                      } else {
+                        _playSoundIfNeeded(state);
+                      }
+                    },
+                    builder: (context, state) {
+                      // Determine bubble size and animation duration based on phase
+                      double targetSize = minBubbleSize;
+                      int animDuration = state.secondsRemaining;
 
-                String phaseTitle = '';
-                String phaseSubtitle = '';
+                      String phaseTitle = '';
+                      String phaseSubtitle = '';
 
-                switch (state.phase) {
-                  case BreathingPhase.prepare:
-                    targetSize = minBubbleSize;
-                    animDuration = 0; // static
-                    phaseTitle = 'Get ready';
-                    phaseSubtitle = 'Get going on your breathing session';
-                    break;
-                  case BreathingPhase.breatheIn:
-                    targetSize = maxBubbleSize;
-                    phaseTitle = 'Breathe in';
-                    phaseSubtitle = 'nice and slow';
-                    break;
-                  case BreathingPhase.holdIn:
-                    targetSize = maxBubbleSize;
-                    animDuration = 0;
-                    phaseTitle = 'Hold gently';
-                    phaseSubtitle = 'keep it in';
-                    break;
-                  case BreathingPhase.breatheOut:
-                    targetSize = minBubbleSize;
-                    phaseTitle = 'Breathe out';
-                    phaseSubtitle = 'nice and slow';
-                    break;
-                  case BreathingPhase.holdOut:
-                    targetSize = minBubbleSize;
-                    animDuration = 0;
-                    phaseTitle = 'Hold softly';
-                    phaseSubtitle = 'keep it out';
-                    break;
-                  case BreathingPhase.completed:
-                    phaseTitle = 'Done!';
-                    phaseSubtitle = 'Great job.';
-                    break;
-                }
+                      switch (state.phase) {
+                        case BreathingPhase.prepare:
+                          targetSize = minBubbleSize;
+                          animDuration = 0; // static
+                          phaseTitle = 'Get ready';
+                          phaseSubtitle = 'Get going on your breathing session';
+                          break;
+                        case BreathingPhase.breatheIn:
+                          targetSize = maxBubbleSize;
+                          phaseTitle = 'Breathe in';
+                          phaseSubtitle = 'nice and slow';
+                          break;
+                        case BreathingPhase.holdIn:
+                          targetSize = maxBubbleSize;
+                          animDuration = 0;
+                          phaseTitle = 'Hold gently';
+                          phaseSubtitle = 'keep it in';
+                          break;
+                        case BreathingPhase.breatheOut:
+                          targetSize = minBubbleSize;
+                          phaseTitle = 'Breathe out';
+                          phaseSubtitle = 'nice and slow';
+                          break;
+                        case BreathingPhase.holdOut:
+                          targetSize = minBubbleSize;
+                          animDuration = 0;
+                          phaseTitle = 'Hold softly';
+                          phaseSubtitle = 'keep it out';
+                          break;
+                        case BreathingPhase.completed:
+                          phaseTitle = 'Done!';
+                          phaseSubtitle = 'Great job.';
+                          break;
+                      }
 
-                // Calculating displayed number inside bubble
-                String bubbleText = '';
-                if (state.phase != BreathingPhase.prepare &&
-                    state.phase != BreathingPhase.completed) {
-                  if (state.phase == BreathingPhase.holdIn ||
-                      state.phase == BreathingPhase.holdOut) {
-                    bubbleText =
-                        ''; // Do not show anything in bubble when holding
-                  } else if (state.phase == BreathingPhase.breatheIn) {
-                    // Count up
-                    int totalPhaseSec = _getPhaseDuration(state.phase);
-                    int elapsed = totalPhaseSec - state.secondsRemaining + 1;
-                    bubbleText = '$elapsed';
-                  } else if (state.phase == BreathingPhase.breatheOut) {
-                    // Count down
-                    bubbleText = '${state.secondsRemaining}';
-                  }
-                } else if (state.phase == BreathingPhase.prepare) {
-                  bubbleText = '${state.secondsRemaining}';
-                }
+                      // Calculating displayed number inside bubble
+                      String bubbleText = '';
+                      if (state.phase != BreathingPhase.prepare &&
+                          state.phase != BreathingPhase.completed) {
+                        if (state.phase == BreathingPhase.holdIn ||
+                            state.phase == BreathingPhase.holdOut) {
+                          bubbleText =
+                              ''; // Do not show anything in bubble when holding
+                        } else if (state.phase == BreathingPhase.breatheIn) {
+                          // Count up
+                          int totalPhaseSec = _getPhaseDuration(state.phase);
+                          int elapsed =
+                              totalPhaseSec - state.secondsRemaining + 1;
+                          bubbleText = '$elapsed';
+                        } else if (state.phase == BreathingPhase.breatheOut) {
+                          // Count down
+                          bubbleText = '${state.secondsRemaining}';
+                        }
+                      } else if (state.phase == BreathingPhase.prepare) {
+                        bubbleText = '${state.secondsRemaining}';
+                      }
 
-                return Column(
-                  children: [
-                    // Top Bar
-                    Padding(
-                      padding: kIsWeb
-                          ? EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.35,
-                              right: MediaQuery.of(context).size.width * 0.35,
-                              top: 20,
-                            )
-                          : const EdgeInsets.symmetric(
+                      return Column(
+                        children: [
+                          SizedBox(height: 60),
+                          // Top Bar
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
                             ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text(
-                                    'Exit?',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(color: Colors.red),
-                                  ),
-                                  content: Text(
-                                    'Are you sure you want to exit?',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
-                                  ),
-                                  actionsPadding: EdgeInsets.only(bottom: 16),
-                                  actionsAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(
-                                        'No',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          '/',
-                                          (route) => false,
-                                        );
-                                      },
-                                      child: Text(
-                                        'Yes',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(color: Colors.red),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              import_main.MyApp.of(context).toggleTheme();
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                color:
-                                    Theme.of(context).brightness ==
-                                        Brightness.light
-                                    ? Colors.black.withValues(alpha: 0.1)
-                                    : Colors.white.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                              child: SvgPicture.asset(
-                                Theme.of(context).brightness == Brightness.light
-                                    ? 'assets/icons/darkMode.svg'
-                                    : 'assets/icons/lightMode.svg',
-                                width: 20,
-                                height: 20,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-                    Text(
-                      "You're a natural",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 18,
-                      ),
-                    ),
-
-                    // Bubble Area
-                    Expanded(
-                      child: Center(
-                        child: AnimatedContainer(
-                          duration: Duration(
-                            seconds: state.isPaused ? 0 : animDuration,
-                          ),
-                          curve: Curves.easeInOut,
-                          width: targetSize,
-                          height: targetSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? const [Color(0x337B2D8E), Color(0x0D7B2D8E)]
-                                  : const [
-                                      Color(0x66C97CF5),
-                                      Color(0x1AC97CF5),
-                                    ],
-                            ),
-                            border: Border.all(
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? const Color(0x1F7B2D8E)
-                                  : const Color(0x40C97CF5),
-                              width: 1,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 100),
-                            switchInCurve: Curves.easeIn,
-                            switchOutCurve: Curves.easeOut,
-                            child: Text(
-                              bubbleText,
-                              key: ValueKey<String>(bubbleText),
-                              style: TextStyle(
-                                fontSize: 45,
-                                fontVariations: const <FontVariation>[
-                                  FontVariation('wght', 700),
-                                ],
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.headlineMedium?.color,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Bottom Info
-                    Column(
-                      children: [
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          switchInCurve: Curves.easeIn,
-                          switchOutCurve: Curves.easeOut,
-                          child: Text(
-                            phaseTitle,
-                            key: ValueKey<String>(phaseTitle),
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          switchInCurve: Curves.easeIn,
-                          switchOutCurve: Curves.easeOut,
-                          child: Text(
-                            phaseSubtitle,
-                            key: ValueKey<String>(phaseSubtitle),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                        const SizedBox(height: 40),
-
-                        // Progress Bar
-                        Padding(
-                          padding: kIsWeb
-                              ? EdgeInsets.only(
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.35,
-                                  right:
-                                      MediaQuery.of(context).size.width * 0.35,
-                                )
-                              : const EdgeInsets.symmetric(horizontal: 64.0),
-                          child: SmoothBreathingProgress(
-                            value: state.maxAppTicks > 0
-                                ? (state.totalAppTicks / state.maxAppTicks)
-                                : 0,
-                            isPaused: state.isPaused,
-                            backgroundColor: Colors.grey.withValues(alpha: 0.2),
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          switchInCurve: Curves.easeIn,
-                          switchOutCurve: Curves.easeOut,
-                          child: Text(
-                            'Cycle ${state.currentCycle} of ${state.totalCycles}',
-                            key: ValueKey<String>(
-                              'Cycle ${state.currentCycle} of ${state.totalCycles}',
-                            ),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontVariations: <FontVariation>[
-                                FontVariation('wght', 600),
-                              ],
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Colors.black87
-                                  : Colors.white70,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Pause/Resume Button
-                        GestureDetector(
-                          onTap: () {
-                            if (state.isPaused) {
-                              _breathingBloc.add(ResumeSession());
-                            } else {
-                              _breathingBloc.add(PauseSession());
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Color(0xFFEFE6F0)
-                                  : Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
                             child: Row(
-                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SvgPicture.asset(
-                                  state.isPaused
-                                      ? 'assets/icons/play.svg'
-                                      : 'assets/icons/pause.svg',
-                                  width: 20,
-                                  height: 20,
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context).iconTheme.color ??
-                                        Colors.white,
-                                    BlendMode.srcIn,
+                                IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Text(
+                                          'Exit?',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(color: Colors.red),
+                                        ),
+                                        content: Text(
+                                          'Are you sure you want to exit?',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium,
+                                        ),
+                                        actionsPadding: EdgeInsets.only(
+                                          bottom: 16,
+                                        ),
+                                        actionsAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              'No',
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium,
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                '/',
+                                                (route) => false,
+                                              );
+                                            },
+                                            child: Text(
+                                              'Yes',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(color: Colors.red),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    import_main.MyApp.of(context).toggleTheme();
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    margin: const EdgeInsets.only(right: 8),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.black.withValues(alpha: 0.1)
+                                          : Colors.white.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(28),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? 'assets/icons/darkMode.svg'
+                                          : 'assets/icons/lightMode.svg',
+                                      width: 20,
+                                      height: 20,
+                                    ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
 
-                                const SizedBox(width: 8),
-                                Text(
-                                  state.isPaused ? 'Resume' : 'Pause',
+                          const SizedBox(height: 20),
+                          Text(
+                            "You're a natural",
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 18,
+                                ),
+                          ),
+
+                          // Bubble Area
+                          Expanded(
+                            child: Center(
+                              child: AnimatedContainer(
+                                duration: Duration(
+                                  seconds: state.isPaused ? 0 : animDuration,
+                                ),
+                                curve: Curves.easeInOut,
+                                width: targetSize,
+                                height: targetSize,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: RadialGradient(
+                                    colors:
+                                        Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? const [
+                                            Color(0x337B2D8E),
+                                            Color(0x0D7B2D8E),
+                                          ]
+                                        : const [
+                                            Color(0x66C97CF5),
+                                            Color(0x1AC97CF5),
+                                          ],
+                                  ),
+                                  border: Border.all(
+                                    color:
+                                        Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? const Color(0x1F7B2D8E)
+                                        : const Color(0x40C97CF5),
+                                    width: 1,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 100),
+                                  switchInCurve: Curves.easeIn,
+                                  switchOutCurve: Curves.easeOut,
+                                  child: Text(
+                                    bubbleText,
+                                    key: ValueKey<String>(bubbleText),
+                                    style: TextStyle(
+                                      fontSize: 45,
+                                      fontVariations: const <FontVariation>[
+                                        FontVariation('wght', 700),
+                                      ],
+                                      color: Theme.of(
+                                        context,
+                                      ).textTheme.headlineMedium?.color,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Bottom Info
+                          Column(
+                            children: [
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                switchInCurve: Curves.easeIn,
+                                switchOutCurve: Curves.easeOut,
+                                child: Text(
+                                  phaseTitle,
+                                  key: ValueKey<String>(phaseTitle),
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineMedium,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                switchInCurve: Curves.easeIn,
+                                switchOutCurve: Curves.easeOut,
+                                child: Text(
+                                  phaseSubtitle,
+                                  key: ValueKey<String>(phaseSubtitle),
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                              const SizedBox(height: 40),
+
+                              // Progress Bar
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 64.0,
+                                ),
+                                child: SmoothBreathingProgress(
+                                  value: state.maxAppTicks > 0
+                                      ? (state.totalAppTicks /
+                                            state.maxAppTicks)
+                                      : 0,
+                                  isPaused: state.isPaused,
+                                  backgroundColor: Colors.grey.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                switchInCurve: Curves.easeIn,
+                                switchOutCurve: Curves.easeOut,
+                                child: Text(
+                                  'Cycle ${state.currentCycle} of ${state.totalCycles}',
+                                  key: ValueKey<String>(
+                                    'Cycle ${state.currentCycle} of ${state.totalCycles}',
+                                  ),
                                   style: TextStyle(
+                                    fontSize: 16,
+                                    fontVariations: <FontVariation>[
+                                      FontVariation('wght', 600),
+                                    ],
                                     color:
                                         Theme.of(context).brightness ==
                                             Brightness.light
                                         ? Colors.black87
-                                        : Colors.white,
-                                    fontVariations: <FontVariation>[
-                                      FontVariation('wght', 600),
-                                    ],
-                                    fontSize: 16,
+                                        : Colors.white70,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+
+                              const SizedBox(height: 32),
+
+                              // Pause/Resume Button
+                              GestureDetector(
+                                onTap: () {
+                                  if (state.isPaused) {
+                                    _breathingBloc.add(ResumeSession());
+                                  } else {
+                                    _breathingBloc.add(PauseSession());
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 32,
+                                    vertical: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Color(0xFFEFE6F0)
+                                        : Theme.of(context).colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        state.isPaused
+                                            ? 'assets/icons/play.svg'
+                                            : 'assets/icons/pause.svg',
+                                        width: 20,
+                                        height: 20,
+                                        colorFilter: ColorFilter.mode(
+                                          Theme.of(context).iconTheme.color ??
+                                              Colors.white,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        state.isPaused ? 'Resume' : 'Pause',
+                                        style: TextStyle(
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.black87
+                                              : Colors.white,
+                                          fontVariations: <FontVariation>[
+                                            FontVariation('wght', 600),
+                                          ],
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 48),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 48),
-                      ],
-                    ),
-                  ],
+                        ],
+                      );
+                    },
+                  ),
                 );
               },
             ),
